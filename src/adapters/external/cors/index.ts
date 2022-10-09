@@ -19,7 +19,7 @@ const corsAdapter = (
     "Access-Control-Allow-Methods",
     "PUT, POST, GET, DELETE, OPTIONS"
   );
-  response.setHeader("Access-Control-Allow-Headers", "Authorization");
+  response.setHeader("Access-Control-Allow-Headers", "*");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
   response.setHeader("Access-Control-Request-Headers", "*");
   response.setHeader("Access-Control-Allow-Credentials", "true");
