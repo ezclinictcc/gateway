@@ -2,6 +2,7 @@
 import { sign, verify } from "jsonwebtoken";
 import { BcryptAdapter } from "../../adapters/presentation/bcrypt/BcryptAdapter";
 import { UuidGeneratorAdapter } from "../../adapters/repository/uuid/UuidGeneratoryAdapter";
+import { CommonEntity } from "../../entities/common/CommonEntity";
 import { CredentialEntity } from "../../entities/credential/CredentialEntity";
 import { LoginEntity } from "../../entities/login/LoginEntity";
 import { IHashEncrypt } from "../../external/interfaces/IHashEncrypt";
@@ -28,7 +29,7 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
     this.repositoryManager = repositoryManager;
   }
 
-  create = async ({ body, token, logger }: IHttpRequest) => {
+  create = async ({ body, logger }: IHttpRequest) => {
     logger.showLog(LogCriticality.INFO, "Enter create login...");
     const commonRepository = new CommonRepository<LoginEntity>(this.entityName);
     const service = new CommonService(commonRepository);
@@ -46,14 +47,23 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
       "credential"
     );
     const serviceCredential = new CommonService(commonCredentialRepository);
-    let user: any = new LoginEntity(null, null, null);
+    let user: any = null;
     await serviceCredential
       .find(credential, logger, this.repositoryManager)
       .then((userCredentials) => {
         if (userCredentials && userCredentials.length === 1) {
+          user = new LoginEntity(null, null, null);
           user = userCredentials.pop();
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
+    console.log("user", user);
+    if (!user) {
+      logger.showLog(LogCriticality.ERROR, "User not found!");
+      throw new Error("login_not_found");
+    }
 
     isValidPassword = await encryptHash.compareHash(
       body.password,
@@ -69,14 +79,14 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
       });
       let id = null;
       verify(token, this.tokenSecret, (err, decode) => {
+        if (err) {
+          logger.showLog(LogCriticality.ERROR, "Invalid token!");
+          throw new Error("invalid_jwt");
+        }
         id = decode.sub;
       });
       const expiredLogin: LoginEntity = new LoginEntity(id, null, null);
-      const isLoginRemoved: any = await service.delete(
-        expiredLogin,
-        logger,
-        this.repositoryManager
-      );
+      await service.delete(expiredLogin, logger, this.repositoryManager);
 
       const login: LoginEntity = new LoginEntity(loginId, token, null);
       const result: any = await service.create(
@@ -87,6 +97,7 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
       logger.showLog(LogCriticality.INFO, "Exit create login...");
       return result;
     }
+    logger.showLog(LogCriticality.ERROR, "Invalid credentials!");
     throw new Error("login_not_found");
   };
 
