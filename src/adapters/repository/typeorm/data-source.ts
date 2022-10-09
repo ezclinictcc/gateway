@@ -4,7 +4,7 @@ import { CreateLogin1659896492936 } from "./migrations/login/1659896492936-Creat
 
 const AppDataSource = new DataSource({
   type: "postgres",
-  host: "https://ezclinik-gateway.herokuapp.com",
+  host: "ec2-18-209-78-11.compute-1.amazonaws.com",
   port: 5432,
   username: "nduxtcjfrhelql",
   password: "58f411535c195a9e2b34f08c7c63b488d16287abc50734fc806c522780475563",
