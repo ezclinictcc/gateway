@@ -5,7 +5,10 @@ const corsAdapter = (
   response: Response,
   next: NextFunction
 ) => {
-  const allowedDomains: string[] = ["http://localhost:3000"];
+  const allowedDomains: string[] = [
+    "http://localhost:3000",
+    "https://ezclinik.netlify.app/",
+  ];
   const origin: string = request.headers.origin || "";
 
   if (origin.length > 0 && allowedDomains.includes(origin)) {
