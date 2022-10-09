@@ -37,7 +37,7 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
     const encryptHash: IHashEncrypt = new BcryptAdapter();
     const credential: CredentialEntity = new CredentialEntity(
       null,
-      body.login,
+      body.email,
       null,
       null
     );
