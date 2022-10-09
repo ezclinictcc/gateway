@@ -22,9 +22,11 @@ function selectProxyHost(req) {
 dotenv.config({
   path: process.env.NODE_ENV === "dev" ? ".env.dev" : ".env",
 });
-
+const port = process.env.PORT || 8080;
+const url = "https://ezclinik-gateway.herokuapp.com";
 const orm = getRepositoryAdapter();
 orm.createConnection();
+swaggerFile.servers[0].url = `${url}/gateway-service`;
 
 const app: IAppConfig = ExpressAppConfig.getInstance();
 app.setMidleware(corsAdapter);
@@ -94,7 +96,7 @@ app.setMidleware(async (req, res, next) => {
     res.status(403).json({ errorDescription: "access_denied" });
   }
 });
-app.setPort(process.env.APP_PORT || 8000);
+app.setPort(port);
 app.setRoute(routes.getRouter());
 app.startServer();
 
