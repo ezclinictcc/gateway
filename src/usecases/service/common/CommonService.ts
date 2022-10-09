@@ -1,5 +1,5 @@
 import { CommonEntity } from "../../../entities/common/CommonEntity";
-import { LogCriticality } from "../../../presentation/interfaces/logs";
+import { LogCriticality } from "../../../presentation/interfaces/log-criticality";
 import { IBaseConnection } from "../../repository/interfaces/IBaseConnection";
 import { IRepository } from "../../repository/interfaces/IRepository";
 import { IAppLogger } from "../interfaces/IAppLogger";

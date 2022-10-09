@@ -9,7 +9,7 @@ import CommonRepository from "../../usecases/repository/common/CommonRepository"
 import { IBaseConnection } from "../../usecases/repository/interfaces/IBaseConnection";
 import CommonService from "../../usecases/service/common/CommonService";
 import { IHttpRequest } from "../interfaces/http-request";
-import { LogCriticality } from "../interfaces/logs";
+import { LogCriticality } from "../interfaces/log-criticality";
 import { BaseController } from "./BaseController";
 
 class LoginController extends BaseController<LoginEntity, IBaseConnection> {

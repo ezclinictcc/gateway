@@ -3,7 +3,7 @@ import { CommonEntity } from "../../../entities/common/CommonEntity";
 import { IAppRoute } from "../../../external/interfaces/IAppRoute";
 import { IBaseController } from "../../../presentation/interfaces/base-controller";
 import { HttpMethods } from "../../../presentation/interfaces/http-request";
-import { LogCriticality } from "../../../presentation/interfaces/logs";
+import { LogCriticality } from "../../../presentation/interfaces/log-criticality";
 import { IBaseConnection } from "../../../usecases/repository/interfaces/IBaseConnection";
 import { IAppLogger } from "../../../usecases/service/interfaces/IAppLogger";
 
