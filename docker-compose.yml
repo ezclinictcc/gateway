@@ -1,0 +1,59 @@
+version: "3.7"
+
+services:
+  database:
+    image: postgres
+    container_name: GTW_DB
+    restart: always
+    ports:
+      - 5433:5432
+    mem_limit: 300m
+    environment:
+      - POSTGRES_USER=gtw_user
+      - POSTGRES_PASSWORD=pwdgtw
+      - POSTGRES_DB=GTW_DB
+    volumes:
+      - pgdata:/data/postgres
+    hostname: gtw_db_hostname
+    networks:
+      gtw_ntw:
+        ipv4_address: 172.22.0.5
+  #  network_mode: host
+  #    networks:
+  #      - networkName: "IDS_NTW"
+
+  app:
+    build: .
+    container_name: GTW
+    ports:
+      - 8080:8080
+    mem_limit: 300m
+    volumes:
+      - .:/usr/app
+    hostname: gtw_app_hostname
+    networks:
+      gtw_ntw:
+        ipv4_address: 172.22.0.4
+##    networks:
+#      - networkName: "IDS_NTW"
+
+volumes:
+  pgdata:
+    driver: local
+networks:
+  gtw_ntw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+#
+#Subir o serviço
+#
+#docker-compose up
+#
+#Subir o serviço em backgroud
+#docker-compose up -d
+#
+#Visualizar logs
+#
+#docker logs IDS -f

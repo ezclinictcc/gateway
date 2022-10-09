@@ -1,0 +1,216 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GatewayService api documentation.",
+    "description": "GatewayService api documentation.",
+    "version": "1.0.0",
+    "contact": {
+      "email": "teste@teste.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/gateway-service",
+      "description": "Url to access service"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["Login"],
+        "summary": "Create",
+        "description": "Create a new login",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginEntity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login Created"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Login"],
+        "summary": "Update",
+        "description": "Update  an existing login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginEntity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login Updated"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "delete": {
+        "tags": ["Logout"],
+        "summary": "Delete",
+        "description": "Delete  an existing login",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "description": "User token"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Login Deleted"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      }
+    },
+    "/credentials": {
+      "get": {
+        "tags": ["Credential"],
+        "summary": "Find",
+        "description": "Find an existing credential",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "login",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verify if already exists creadential"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Credential searching success"
+          },
+          "500": {
+            "description": "Unexpected errors"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Credential"],
+        "summary": "Create",
+        "description": "Create a new credential",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialEntity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Credential Created"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Credential"],
+        "summary": "Update",
+        "description": "Update  an existing credential",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialEntity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Credential Updated"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "LoginEntity": {
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "CredentialEntity": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
