@@ -13,6 +13,7 @@ const corsAdapter = (
 
   if (origin.length > 0 && allowedDomains.includes(origin)) {
     response.setHeader("Access-Control-Allow-Origin", origin);
+    response.setHeader("Authorization", origin);
   }
 
   response.setHeader(
