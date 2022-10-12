@@ -45,7 +45,7 @@ app.setMidleware(async (req, res, next) => {
 
       verify(
         req.headers.authorization.replace("Bearer ", ""),
-        "040176b773bf347dced85cfe32038d80",
+        process.env.TOKEN_SECRET,
         (err) => {
           if (err) {
             res.status(401).json({ errorDescription: "token expired" });

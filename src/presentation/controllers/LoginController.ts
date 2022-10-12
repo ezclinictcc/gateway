@@ -1,8 +1,7 @@
 /* eslint-disable no-unreachable */
-import { sign, verify } from "jsonwebtoken";
+import { decode, sign } from "jsonwebtoken";
 import { BcryptAdapter } from "../../adapters/presentation/bcrypt/BcryptAdapter";
 import { UuidGeneratorAdapter } from "../../adapters/repository/uuid/UuidGeneratoryAdapter";
-import { CommonEntity } from "../../entities/common/CommonEntity";
 import { CredentialEntity } from "../../entities/credential/CredentialEntity";
 import { LoginEntity } from "../../entities/login/LoginEntity";
 import { IHashEncrypt } from "../../external/interfaces/IHashEncrypt";
@@ -15,7 +14,6 @@ import { BaseController } from "./BaseController";
 
 class LoginController extends BaseController<LoginEntity, IBaseConnection> {
   // private readonly logger: IAppLogger;
-  private readonly tokenSecret: string = "040176b773bf347dced85cfe32038d80";
 
   private readonly tokenExpireTime: string = "1m";
 
@@ -31,6 +29,7 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
 
   create = async ({ body, logger }: IHttpRequest) => {
     logger.showLog(LogCriticality.INFO, "Enter create login...");
+    const tokenSecret = process.env.TOKEN_SECRET;
     const commonRepository = new CommonRepository<LoginEntity>(this.entityName);
     const service = new CommonService(commonRepository);
     const uuid = new UuidGeneratorAdapter();
@@ -73,20 +72,23 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
     const loginId = uuid.createId();
 
     if (isValidPassword) {
-      const token = sign({ idUser: user.id }, this.tokenSecret, {
+      const token = sign({ idUser: user.id }, tokenSecret, {
         subject: loginId,
         expiresIn: this.tokenExpireTime,
       });
       let id = null;
-      verify(token, this.tokenSecret, (err, decode) => {
-        if (err) {
-          logger.showLog(LogCriticality.ERROR, "Invalid token!");
-          throw new Error("invalid_jwt");
-        }
-        id = decode.sub;
-      });
+
+      const tokenDecode = decode(token);
+      id = tokenDecode.sub;
       const expiredLogin: LoginEntity = new LoginEntity(id, null, null);
-      await service.delete(expiredLogin, logger, this.repositoryManager);
+      await service
+        .delete(expiredLogin, logger, this.repositoryManager)
+        .then(() => {
+          logger.showLog(LogCriticality.INFO, "Old session removed...");
+        })
+        .catch(() => {
+          logger.showLog(LogCriticality.ERROR, "Error to remove old session");
+        });
 
       const login: LoginEntity = new LoginEntity(loginId, token, null);
       const result: any = await service.create(
@@ -136,9 +138,8 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
     logger.showLog(LogCriticality.INFO, "Enter logout...");
 
     let id = null;
-    verify(token, this.tokenSecret, (err, decode) => {
-      id = decode.sub;
-    });
+    const tokenDecode = decode(token);
+    id = tokenDecode.sub;
 
     const commonRepository = new CommonRepository<LoginEntity>(this.entityName);
     const service = new CommonService(commonRepository);
