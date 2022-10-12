@@ -17,7 +17,7 @@ class LoginController extends BaseController<LoginEntity, IBaseConnection> {
   // private readonly logger: IAppLogger;
   private readonly tokenSecret: string = "040176b773bf347dced85cfe32038d80";
 
-  private readonly tokenExpireTime: string = "15m";
+  private readonly tokenExpireTime: string = "1m";
 
   private readonly repositoryManager: IBaseConnection;
 
