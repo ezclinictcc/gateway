@@ -15,7 +15,7 @@ import { BaseController } from "./BaseController";
 class LoginController extends BaseController<LoginEntity, IBaseConnection> {
   // private readonly logger: IAppLogger;
 
-  private readonly tokenExpireTime: string = "1m";
+  private readonly tokenExpireTime: string = "30m";
 
   private readonly repositoryManager: IBaseConnection;
 
